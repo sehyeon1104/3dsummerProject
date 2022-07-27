@@ -16,17 +16,13 @@ public class GameManager : MonoBehaviour
             }
             return instance;
         }
-        set
-        {
-            instance = value;
-        }
     }
     int scores = 0; //현재 게임 점수
     public bool isGameOver { get; private set; }
     private void Awake()
     {
         //현재 싱글턴 오브젝트가 된 다른  GameManagerObject가 있다면 
-        if(instance != this)
+        if( instance != this)
         {
             Destroy(gameObject);
         }
