@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         //현재 싱글턴 오브젝트가 된 다른  GameManagerObject가 있다면 
-        if( instance != this)
+        if( Instance != this)
         {
             Destroy(gameObject);
         }
