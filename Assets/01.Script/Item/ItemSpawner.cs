@@ -36,14 +36,25 @@ public class ItemSpawner : MonoBehaviour
 
     private void Spawn()
     {
-       //플레이어 근처에 내비에서 위의 랜덤 위치 가져오기
+        //플레이어 근처에 내비에서 위의 랜덤 위치 가져오기
+        Vector3 spawnPosition = GetRandomPointOnNavMesh(playerTransform.position, maxDistance);
 
+        //바닥에서 0.5만큼 올리기
+        spawnPosition += Vector3.up * 0.5f;
 
+        //아이템 중 하나를 무작위로 골라 랜덤 위치에 생성
+
+        GameObject selectedItem = items[Random.Range(0, items.Length)];
+
+        GameObject item = Instantiate(selectedItem, spawnPosition, Quaternion.identity);
+
+        Destroy(item, 5f);
     }
     // 네비매시 위의 랜덤한 위치를 변환하는 메서드
     //  center를 중심으로 distance 반경 안에서의 랜덤한 위치를 찾음
     Vector3 GetRandomPointOnNavMesh(Vector3 center,float distance)
     {
+        //center을 중심으로 반지름이 distane 인 구안에서 랜덤한 위치하나를 지정
         Vector3 randomPos = Random.insideUnitSphere * distance + center;
 
         NavMeshHit hit;
