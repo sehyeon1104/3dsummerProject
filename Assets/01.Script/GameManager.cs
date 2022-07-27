@@ -16,8 +16,12 @@ public class GameManager : MonoBehaviour
             }
             return instance;
         }
+        set
+        {
+            instance = value;
+        }
     }
-    int score = 0; //현재 게임 점수
+    int scores = 0; //현재 게임 점수
     public bool isGameOver { get; private set; }
     private void Awake()
     {
@@ -45,10 +49,10 @@ public class GameManager : MonoBehaviour
     {
         if(!isGameOver)
         {
-            score += newScore;
+            scores += newScore;
 
             //점수 UI 갱신
-            UIManager.Instance.UpdateScoreText(score);
+            UIManager.Instance.UpdateScoreText(scores);
         }
     }
 }
