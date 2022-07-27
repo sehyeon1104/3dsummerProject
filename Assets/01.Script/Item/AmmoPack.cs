@@ -14,6 +14,7 @@ public class AmmoPack : MonoBehaviour,IItem
         {
             playerShooter.gun.ammoRemain += ammo;
         }
+        //사용되었으므로 자기자신을 파괴
         Destroy(gameObject);
     }
 

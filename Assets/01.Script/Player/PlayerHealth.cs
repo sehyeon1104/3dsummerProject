@@ -76,4 +76,20 @@ public class PlayerHealth : LivingEntity
 
         healthSlider.value = health;
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(!dead)
+        {
+            //충돌한 상대방으로부터  Item 컴포넌트 가져오기
+            IItem item = other.GetComponent<IItem>(); 
+             //item 가져오기 성공
+            if(item != null)
+            {
+                item.Use(gameObject);
+
+                playerAudio.PlayOneShot(itemPickupClip);
+            }
+        }
+    }
 }
