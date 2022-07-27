@@ -18,10 +18,13 @@ public class PlayerShooter : MonoBehaviour
 
     PlayerInput playerInput; // player input
     Animator playerAni; // player animator
+
+    Vector3 gunPivotPos;
     void Start()
     {
         playerInput = GetComponent<PlayerInput>();
         playerAni = GetComponent<Animator>();
+        gunPivotPos = gunPivot.position;
     }
 
     private void OnEnable() // 활성화 될때 
@@ -35,6 +38,7 @@ public class PlayerShooter : MonoBehaviour
     }
     void Update()
     {
+        gunPivot.position = gunPivotPos;
         if (playerInput.fire)
         {
             gun.Fire();
@@ -61,8 +65,8 @@ public class PlayerShooter : MonoBehaviour
     private void OnAnimatorIK(int layerIndex)
     {
         // 총의 기준점 gunPivot을 3D 모델의 오른쪽 팔꿈치 위치로
-        gunPivot.position = playerAni.GetIKHintPosition(AvatarIKHint.RightElbow);
-
+        gunPivotPos = playerAni.GetIKHintPosition(AvatarIKHint.RightElbow);
+        gunPivotPos.x -= 0.1f;
         //IK를 사용하여 왼손의 위치와 회전을 총의 왼쪽 손잡이에 맞춤
         playerAni.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1);
         playerAni.SetIKPosition(AvatarIKGoal.LeftHand, leftMount.position);
