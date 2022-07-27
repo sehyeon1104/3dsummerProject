@@ -46,6 +46,16 @@ public class PlayerShooter : MonoBehaviour
                 playerAni.SetTrigger("Reload");
             }
         }
+        UpdateUI();
+    }
+
+    void UpdateUI()
+    {
+        if(gun!=null&&UIManager.Instance!=null)
+        {
+            // UIManagerÀÇ Åº¾Ë Ç¥½Ã
+            UIManager.Instance.UpdateAmmoText(gun.magAmmo,gun.ammoRemain);
+        }
     }
 
     private void OnAnimatorIK(int layerIndex)
