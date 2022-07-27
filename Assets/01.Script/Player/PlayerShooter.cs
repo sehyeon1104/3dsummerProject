@@ -6,7 +6,7 @@ using UnityEngine;
 // 양손이 총에 위치하도록 조정
 public class PlayerShooter : MonoBehaviour
 {
-    [SerializeField]
+    public
      Gun gun; //사용할 총
 
     [SerializeField]
