@@ -55,10 +55,12 @@ public class ItemSpawner : MonoBehaviour
     Vector3 GetRandomPointOnNavMesh(Vector3 center,float distance)
     {
         //center을 중심으로 반지름이 distane 인 구안에서 랜덤한 위치하나를 지정
+        //Random.insideUnitSphere는 반지름이 1인 구에서 랜덤한 한 점을 변환하는 메서드
         Vector3 randomPos = Random.insideUnitSphere * distance + center;
 
         NavMeshHit hit;
         //distance안에서 randompos에 가장 가까운 내비매시 위의 한점을 찾음
+        //navmesh.allareas는 navmesh에설정된 모든 지역
         NavMesh.SamplePosition(randomPos, out hit, distance, NavMesh.AllAreas);
 
         return hit.position;
