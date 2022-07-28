@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d474e512c39cdcf43b3655d833ad2d19, type: 3}
-  m_Name: DefaultZombie
+  m_Name: DefaultZombie 1
   m_EditorClassIdentifier: 
   health: 100
   damage: 20

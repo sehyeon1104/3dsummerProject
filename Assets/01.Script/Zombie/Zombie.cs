@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.AI;
 public class Zombie : LivingEntity
 {
     public ParticleSystem hitEffect; // 피격 시 재생할 파티클 효과
@@ -9,17 +9,37 @@ public class Zombie : LivingEntity
     public AudioClip hitSound;       // 피격 시 재생할 소리
     public ZombieData zombieData;    // 디폴트 좀비 데이터
 
+    public LayerMask whatIsTarget; //추적 대상 
+
+    LivingEntity targetEntity; // 추적 대상
+    NavMeshAgent navMeshAgent; // 경로 지정
+    
     Animator zombieAnimator;       // 애니메이션 컴포넌트
     AudioSource zombieAudioPlayer; // 오디오 소스 컴포넌트
      Renderer zombieRenderer;      // 렌더러 컴포넌트 
-
     
     private float damage = 20f;             // 공격력 
     private float timeBetAttack = 0.5f;     // 공격 간격
     private float lastAttackTime;           // 마지막 공격 시점
     float score = 100;                        // 획득 점수
+
+    //추적 대상이 존재하는지 알려주는 프로퍼티
+
+    bool hasTarget
+    {
+        get
+        {
+            if(targetEntity != null&&!targetEntity.dead)
+            {
+
+                return true;
+            }
+            return false;
+        }
+    }
     private void Awake()                   
     {
+        navMeshAgent = GetComponent<NavMeshAgent>();
         zombieAnimator = GetComponent<Animator>();
         zombieAudioPlayer = GetComponent<AudioSource>();
 
@@ -45,12 +65,54 @@ public class Zombie : LivingEntity
 
         //좀비 스킨 컬러
         zombieRenderer.material.color = data.skinColor;
+
+        // 네비에서 에이전트의 이동 속도 설정
+        navMeshAgent.speed = data.speed;
     }
-    // Update is called once per frame
+    private void Start()
+    {
+        // 게임 오브젝트 활성화 동시에
+        StartCoroutine(UpdatePath());
+    }
     void Update()
     {
-        
+        //추적 대상의 존재 여부에 따라 다른 애니메이션 재생
+        zombieAnimator.SetBool("HasTarget", hasTarget);
+    }
+    IEnumerator UpdatePath()
+    {
+        while (!dead)
+        {
+            if(hasTarget)
+            {
+                //추적 대상 존재 : 경로를 갱신하고 AI 이동을 계속 진행
+                navMeshAgent.isStopped = false;
+                navMeshAgent.SetDestination(targetEntity.transform.position);
+            }
+            else
+            {
+                //추적 대상 없음 : AI 이동 중지
+                navMeshAgent.isStopped = true;
 
+                //20 유닛의 반지름을 가진 가상의 구를 그렸을 때 구와 겹치는 모든 콜라이더를 가져옴
+                //whatIsTarget 레이어를 가진 콜라이더만 가져오도록 한다
+                Collider[] colldiers = Physics.OverlapSphere(transform.position, 20f, whatIsTarget);  
+                
+                // 모든 콜라이더를 순회하면 살아 있는 livingEntity를 찾기
+             for(int i = 0; i < colldiers.Length; i++)
+                {
+                    LivingEntity livingEntity = colldiers[i].GetComponent<LivingEntity>();
+
+                    if(livingEntity != null&&!livingEntity.dead)
+                    {
+                        targetEntity = livingEntity;
+
+                        break;
+                    }
+                }
+            }
+            yield return new WaitForSeconds(0.25f);
+        }
     }
 
     public override void OnDamage(float damage, Vector3 hitPoint, Vector3 hitNormal)
@@ -80,6 +142,8 @@ public class Zombie : LivingEntity
             c.enabled = false;
         }
 
+        navMeshAgent.isStopped = true;
+        navMeshAgent.enabled = false;
         //사망 애니메이션 재셍
         zombieAnimator.SetTrigger("Die");
 
@@ -93,6 +157,7 @@ public class Zombie : LivingEntity
             LivingEntity attackTarget = other.GetComponent<LivingEntity>();
            if(attackTarget!=null)   //플레이어 인지 확인
             {
+
                 //최근 공격 시간 갱신
                 lastAttackTime =Time.time;
 
