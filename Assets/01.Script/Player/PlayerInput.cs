@@ -16,6 +16,14 @@ public class PlayerInput : MonoBehaviour
     
     void Update()
     {
+        if(GameManager.Instance !=null&& GameManager.Instance.isGameOver)
+        {
+            move = 0;
+            rotate = 0;
+            fire = false;
+            reload = false;
+            return;
+        }
         // gameover
 
         // move 입력 처리
