@@ -79,6 +79,14 @@ public class Gun : MonoBehaviour
         if(Physics.Raycast(fireTransform.position,fireTransform.forward,out hit,10f))
         {
             hitPos = hit.point;
+
+            //레이가 어떤 물체와 충돌이 발생 했을 때
+            IDamagable target = hit.collider.GetComponent<IDamagable>();
+
+            if(target != null)
+            {
+                target.OnDamage(gunData.damage,hitPos,hitPos);
+            }
         }
         else
         {
